@@ -16,16 +16,16 @@ public class NoteHold : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        transform.position -= new Vector3(0f, unitsPerSec * Time.deltaTime, 0f);
-        if (gameObject.transform.position.y <= 0) {
+        transform.localPosition -= new Vector3(0f, unitsPerSec * Time.deltaTime, 0f);
+        if (gameObject.transform.localPosition.y <= 0) {
             if (Input.GetKey(keyToPress)) {
                 gameObject.SetActive(false);
                 Destroy(gameObject);
-                GameManager.instance.HoldHit(transform.position.x);
+                GameManager.instance.HoldHit(transform.localPosition.x);
             } else {
                 gameObject.SetActive(false);
                 Destroy(gameObject);
-                GameManager.instance.NoteMiss(transform.position.x);
+                GameManager.instance.NoteMiss(transform.localPosition.x);
             }
         }
     }

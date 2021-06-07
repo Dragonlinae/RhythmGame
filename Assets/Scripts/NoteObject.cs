@@ -18,7 +18,7 @@ public class NoteObject : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        transform.position -= new Vector3(0f, unitsPerSec * Time.deltaTime, 0f);
+        transform.localPosition -= new Vector3(0f, unitsPerSec * Time.deltaTime, 0f);
 
         if (Input.GetKeyDown(keyToPress)) {
             updateIsNext();
@@ -26,12 +26,12 @@ public class NoteObject : MonoBehaviour {
                 resetIsNext();
                 gameObject.SetActive(false);
                 Destroy(gameObject);
-                if (Mathf.Abs(transform.position.y) > 0.4) {
-                    GameManager.instance.goodHit(transform.position.x);
-                } else if (Mathf.Abs(transform.position.y) > 0.2){
-                    GameManager.instance.greatHit(transform.position.x);
+                if (Mathf.Abs(transform.localPosition.y) > 0.4) {
+                    GameManager.instance.goodHit(transform.localPosition.x);
+                } else if (Mathf.Abs(transform.localPosition.y) > 0.2){
+                    GameManager.instance.greatHit(transform.localPosition.x);
                 } else {
-                    GameManager.instance.perfectHit(transform.position.x);
+                    GameManager.instance.perfectHit(transform.localPosition.x);
                 }
             }
         }
@@ -70,7 +70,7 @@ public class NoteObject : MonoBehaviour {
             if (other.tag == "Activator") {
                 canPress = false;
 
-                GameManager.instance.NoteMiss(transform.position.x);
+                GameManager.instance.NoteMiss(transform.localPosition.x);
                 Destroy(gameObject);
             }
         }

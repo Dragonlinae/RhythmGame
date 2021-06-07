@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class WorldSelector : MonoBehaviour
 {
 
     public int direction = 0;
     public bool moving = false;
-    public GameObject[] worldList = new GameObject[2];
+    public GameObject[] worldList = new GameObject[3];
     public int currentWorld = 0;
     public int nextWorld = 0;
     public float totalRotate = 83.3f;
@@ -51,5 +52,9 @@ public class WorldSelector : MonoBehaviour
             }
 
         }
+    }
+
+    public void backToMenu() {
+        SceneManager.LoadScene("Menu");
     }
 }

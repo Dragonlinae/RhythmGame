@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour {
     public GameObject holdDownNote;
     public GameObject holdUpNote;
     public GameObject holdRightNote;
+    public GameObject parentGameObject;
 
     public int totalNotes;
     public int normalHits;
@@ -53,6 +54,9 @@ public class GameManager : MonoBehaviour {
     public float sendEarlyTime;
     public float initialTimer;
     public bool musicStarted;
+    public int beatsPerMeasure;
+    public float timePerAttack;
+    public float nextAttackTime;
 
     public int spawnCounter;
 
@@ -80,6 +84,11 @@ public class GameManager : MonoBehaviour {
         unitsPerSec = 10 * scrollSpeed * bpm / 288;
 
         sendEarlyTime = 10000 / unitsPerSec;
+
+        setVolume(PlayerPrefs.GetFloat("Volume", 1.0f));
+
+        timePerAttack = msPerBeat * beatsPerMeasure / 1000.0f;
+        nextAttackTime = timePerAttack;
     }
 
     // Update is called once per frame
@@ -105,6 +114,10 @@ public class GameManager : MonoBehaviour {
                         genNote();
                         spawnCounter++;
                     }
+                }
+
+                if(music.time > nextAttackTime) {
+                    nextAttackTime += timePerAttack;
                 }
             }
             if (music.time >= music.clip.length && !resultsScreen.activeInHierarchy) {
@@ -151,38 +164,43 @@ public class GameManager : MonoBehaviour {
 
     void genNote() {
         if (music2[spawnCounter] == 64) {
-            Instantiate(leftNote, new Vector3(leftNote.transform.position.x, 10.0f, 0.0f), leftNote.transform.rotation);
+            genNote2(leftNote);
             if (music3[spawnCounter] == 128) {
                 int holdLength = (int)((music4[spawnCounter] - music1[spawnCounter]) / 1000.0 * unitsPerSec);
                 for (int i = 0; i < holdLength; i++) {
-                    Instantiate(holdLeftNote, new Vector3(leftNote.transform.position.x, 11.0f + i, 0.0f), leftNote.transform.rotation);
+                    genNote2(holdLeftNote, 11.0f + i);
                 }
             }
         } else if (music2[spawnCounter] == 192) {
-            Instantiate(upNote, new Vector3(upNote.transform.position.x, 10.0f, 0.0f), upNote.transform.rotation);
+            genNote2(upNote);
             if (music3[spawnCounter] == 128) {
                 int holdLength = (int)((music4[spawnCounter] - music1[spawnCounter]) / 1000.0 * unitsPerSec);
                 for (int i = 0; i < holdLength; i++) {
-                    Instantiate(holdUpNote, new Vector3(holdUpNote.transform.position.x, 11.0f + i, 0.0f), holdUpNote.transform.rotation);
+                    genNote2(holdUpNote, 11.0f + i);
                 }
             }
         } else if (music2[spawnCounter] == 320) {
-            Instantiate(downNote, new Vector3(downNote.transform.position.x, 10.0f, 0.0f), downNote.transform.rotation);
+            genNote2(downNote);
             if (music3[spawnCounter] == 128) {  
                 int holdLength = (int)((music4[spawnCounter] - music1[spawnCounter]) / 1000.0 * unitsPerSec);
                 for (int i = 0; i < holdLength; i++) {
-                    Instantiate(holdDownNote, new Vector3(holdDownNote.transform.position.x, 11.0f + i, 0.0f), holdDownNote.transform.rotation);
+                    genNote2(holdDownNote, 11.0f + i);
                 }
             }
         } else if (music2[spawnCounter] == 448) {
-            Instantiate(rightNote, new Vector3(rightNote.transform.position.x, 10.0f, 0.0f), rightNote.transform.rotation);
+            genNote2(rightNote);
             if (music3[spawnCounter] == 128) {
                 int holdLength = (int)((music4[spawnCounter] - music1[spawnCounter]) / 1000.0 * unitsPerSec);
                 for (int i = 0; i < holdLength; i++) {
-                    Instantiate(holdRightNote, new Vector3(holdRightNote.transform.position.x, 11.0f + i, 0.0f), holdRightNote.transform.rotation);
+                    genNote2(holdRightNote, 11.0f + i);
                 }
             }
         }
+    }
+
+    void genNote2(GameObject noteType, float xPos = 10.0f) {
+        GameObject note = Instantiate(noteType, new Vector3(noteType.transform.position.x, xPos, noteType.transform.position.z), noteType.transform.rotation);
+        note.transform.SetParent(parentGameObject.transform, false);
     }
 
     public void NoteHit() {
@@ -192,24 +210,27 @@ public class GameManager : MonoBehaviour {
     }
 
     public void goodHit(float xPos) {
-        var obj = Instantiate(hitEffect, new Vector3(xPos, 0.0f, 0.0f), hitEffect.transform.rotation);
-        Destroy(obj, 0.3f);
+        var hitObject = Instantiate(hitEffect, new Vector3(xPos, 0.0f, 6.0f), hitEffect.transform.rotation);
+        hitObject.transform.SetParent(parentGameObject.transform, false);
+        Destroy(hitObject, 0.3f);
         currentScore += scorePerGood;
         NoteHit();
 
         normalHits++;
     }
     public void greatHit(float xPos) {
-        var obj = Instantiate(goodEffect, new Vector3(xPos, 0.0f, 0.0f), goodEffect.transform.rotation);
-        Destroy(obj, 0.3f);
+        var hitObject = Instantiate(goodEffect, new Vector3(xPos, 0.0f, 6.0f), goodEffect.transform.rotation);
+        hitObject.transform.SetParent(parentGameObject.transform, false);
+        Destroy(hitObject, 0.3f);
         currentScore += scorePerGreat;
         NoteHit();
 
         goodHits++;
     }
     public void perfectHit(float xPos) {
-        var obj = Instantiate(perfectEffect, new Vector3(xPos, 0.0f, 0.0f), perfectEffect.transform.rotation);
-        Destroy(obj, 0.3f);
+        var hitObject = Instantiate(perfectEffect, new Vector3(xPos, 0.0f, 6.0f), perfectEffect.transform.rotation);
+        hitObject.transform.SetParent(parentGameObject.transform, false);
+        Destroy(hitObject, 0.3f);
         currentScore += scorePerPerfect;
         NoteHit();
 
@@ -217,15 +238,17 @@ public class GameManager : MonoBehaviour {
     }
 
     public void NoteMiss(float xPos) {
-        var obj = Instantiate(missEffect, new Vector3(xPos, 0.0f, 0.0f), missEffect.transform.rotation);
-        Destroy(obj, 0.3f);
+        var hitObject = Instantiate(missEffect, new Vector3(xPos, 0.0f, 6.0f), missEffect.transform.rotation);
+        hitObject.transform.SetParent(parentGameObject.transform, false);
+        Destroy(hitObject, 0.3f);
         comboTracker = 0;
         comboText.text = "COMBO: x" + comboTracker;
         missHits++;
     }
     public void HoldHit(float xPos) {
-        var obj = Instantiate(perfectEffect, new Vector3(xPos, 0.0f, 0.0f), missEffect.transform.rotation);
-        Destroy(obj, 0.3f);
+        var hitObject = Instantiate(perfectEffect, new Vector3(xPos, 0.0f, 6.0f), missEffect.transform.rotation);
+        hitObject.transform.SetParent(parentGameObject.transform, false);
+        Destroy(hitObject, 0.3f);
         currentScore += scorePerPerfect;
         NoteHit();
 
@@ -245,5 +268,9 @@ public class GameManager : MonoBehaviour {
         if(!rcurrent) {
             rcurrent = true;
         }
+    }
+
+    public void setVolume(float newVolume) {
+        music.volume = newVolume;
     }
 }
