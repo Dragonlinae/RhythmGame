@@ -22,16 +22,20 @@ public class NoteObject : MonoBehaviour {
 
         if (Input.GetKeyDown(keyToPress)) {
             updateIsNext();
-            if (canPress && isNext) {
-                resetIsNext();
-                gameObject.SetActive(false);
-                Destroy(gameObject);
-                if (Mathf.Abs(transform.localPosition.y) > 0.4) {
-                    GameManager.instance.goodHit(transform.localPosition.x);
-                } else if (Mathf.Abs(transform.localPosition.y) > 0.2){
-                    GameManager.instance.greatHit(transform.localPosition.x);
+            if (isNext) {
+                if (canPress) {
+                    resetIsNext();
+                    gameObject.SetActive(false);
+                    Destroy(gameObject);
+                    if (Mathf.Abs(transform.localPosition.y) > 0.4) {
+                        GameManager.instance.goodHit(transform.localPosition.x);
+                    } else if (Mathf.Abs(transform.localPosition.y) > 0.2) {
+                        GameManager.instance.greatHit(transform.localPosition.x);
+                    } else {
+                        GameManager.instance.perfectHit(transform.localPosition.x);
+                    }
                 } else {
-                    GameManager.instance.perfectHit(transform.localPosition.x);
+                    GameManager.instance.NoteMiss(transform.localPosition.x);
                 }
             }
         }

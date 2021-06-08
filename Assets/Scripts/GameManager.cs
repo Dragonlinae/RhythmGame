@@ -96,10 +96,10 @@ public class GameManager : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
-        //rotationAmount += Time.deltaTime*3;
+        rotationAmount += Time.deltaTime*3;
         
-        //parentGameObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, (float)Math.Sin(rotationAmount) * 50);
-        //parentGameObject.transform.localPosition = new Vector3((float)Math.Sin(rotationAmount * 2) * 7, (float)Math.Sin(rotationAmount * 3) * 5, 0.0f);
+        parentGameObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, (float)Math.Sin(rotationAmount) * 50);
+        parentGameObject.transform.localPosition = new Vector3((float)Math.Sin(rotationAmount * 2) * 7, (float)Math.Sin(rotationAmount * 3) * 5, 0.0f);
         if (!startPlaying) {
             if (Input.anyKeyDown) {
                 startPlaying = true;
