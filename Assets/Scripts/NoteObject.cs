@@ -10,6 +10,7 @@ public class NoteObject : MonoBehaviour {
     public bool started = true;
     public char noteType;
     public bool isNext;
+    public string activatorTag;
 
     // Start is called before the first frame update
     void Start() {
@@ -28,14 +29,14 @@ public class NoteObject : MonoBehaviour {
                     gameObject.SetActive(false);
                     Destroy(gameObject);
                     if (Mathf.Abs(transform.localPosition.y) > 0.4) {
-                        GameManager.instance.goodHit(transform.localPosition.x);
+                        GameManager.instance.goodHit(transform.parent.gameObject);
                     } else if (Mathf.Abs(transform.localPosition.y) > 0.2) {
-                        GameManager.instance.greatHit(transform.localPosition.x);
+                        GameManager.instance.greatHit(transform.parent.gameObject);
                     } else {
-                        GameManager.instance.perfectHit(transform.localPosition.x);
+                        GameManager.instance.perfectHit(transform.parent.gameObject);
                     }
                 } else {
-                    GameManager.instance.NoteMiss(transform.localPosition.x);
+                    GameManager.instance.NoteMiss(transform.parent.gameObject);
                 }
             }
         }
@@ -65,16 +66,16 @@ public class NoteObject : MonoBehaviour {
     }
 
     void OnTriggerEnter2D(Collider2D other) {
-        if (other.tag == "Activator") {
+        if (other.tag == activatorTag) {
             canPress = true;
         }
     }
     void OnTriggerExit2D(Collider2D other) {
         if (gameObject.activeSelf) {
-            if (other.tag == "Activator") {
+            if (other.tag == activatorTag) {
                 canPress = false;
 
-                GameManager.instance.NoteMiss(transform.localPosition.x);
+                GameManager.instance.NoteMiss(transform.parent.gameObject);
                 Destroy(gameObject);
             }
         }

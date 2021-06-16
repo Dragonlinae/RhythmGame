@@ -30,6 +30,10 @@ public class GameManager : MonoBehaviour {
     public GameObject holdUpNote;
     public GameObject holdRightNote;
     public GameObject parentGameObject;
+    public GameObject leftParent;
+    public GameObject upParent;
+    public GameObject downParent;
+    public GameObject rightParent;
 
     public int totalNotes;
     public int normalHits;
@@ -96,10 +100,26 @@ public class GameManager : MonoBehaviour {
     // Update is called once per frame
     void Update() {
 
-        rotationAmount += Time.deltaTime*3;
-        
-        parentGameObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, (float)Math.Sin(rotationAmount) * 50);
-        parentGameObject.transform.localPosition = new Vector3((float)Math.Sin(rotationAmount * 2) * 7, (float)Math.Sin(rotationAmount * 3) * 5, 0.0f);
+        //rotationAmount += Time.deltaTime*3;
+
+        //parentGameObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, (float)Math.Sin(rotationAmount) * 50);
+        //parentGameObject.transform.localPosition = new Vector3((float)Math.Sin(rotationAmount * 2) * 7, (float)Math.Sin(rotationAmount * 3) * 5, 0.0f);
+
+        rotationAmount += Time.deltaTime * 1;
+
+        //leftParent.transform.rotation = Quaternion.Euler(0.0f, 0.0f, (float)Math.Sin(rotationAmount) * 200);
+        //rightParent.transform.rotation = Quaternion.Euler(0.0f, 0.0f, (float)Math.Sin(rotationAmount) * -100);
+        //downParent.transform.rotation = Quaternion.Euler(0.0f, 0.0f, (float)Math.Sin(rotationAmount) * -100);
+        //upParent.transform.rotation = Quaternion.Euler(0.0f, 0.0f, (float)Math.Sin(rotationAmount) * 200);
+        //leftParent.transform.localPosition = new Vector3((float)Math.Sin(rotationAmount * 5) * 7, (float)Math.Sin(rotationAmount * -4) * 5, 0.0f);
+        //rightParent.transform.localPosition = new Vector3((float)Math.Sin(rotationAmount * -1) * 7, (float)Math.Sin(rotationAmount * 6) * 5, 0.0f);
+        //downParent.transform.localPosition = new Vector3((float)Math.Sin(rotationAmount * -3) * 7, (float)Math.Sin(rotationAmount * 1) * 5, 0.0f);
+        //upParent.transform.localPosition = new Vector3((float)Math.Sin(rotationAmount * 4) * 7, (float)Math.Sin(rotationAmount * 8) * 5, 0.0f);
+        //leftParent.transform.RotateAround(new Vector3(0f,4.4f,0), new Vector3(0,0,1), 200 * Time.deltaTime);
+        //rightParent.transform.RotateAround(new Vector3(0f, 4.4f, 0), new Vector3(0, 0, 1), 200 * Time.deltaTime);
+        //downParent.transform.RotateAround(new Vector3(0f, 4.4f, 0), new Vector3(0, 0, 1), 200 * Time.deltaTime);
+        //upParent.transform.RotateAround(new Vector3(0f, 4.4f, 0), new Vector3(0, 0, 1), 200 * Time.deltaTime);
+
         if (!startPlaying) {
             if (Input.anyKeyDown) {
                 startPlaying = true;
@@ -171,43 +191,43 @@ public class GameManager : MonoBehaviour {
 
     void genNote() {
         if (music2[spawnCounter] == 64) {
-            genNote2(leftNote);
+            genNote2(leftNote, leftParent);
             if (music3[spawnCounter] == 128) {
                 int holdLength = (int)((music4[spawnCounter] - music1[spawnCounter]) / 1000.0 * unitsPerSec);
                 for (int i = 0; i < holdLength; i++) {
-                    genNote2(holdLeftNote, 11.0f + i);
+                    genNote2(holdLeftNote, leftParent, 11.0f + i);
                 }
             }
         } else if (music2[spawnCounter] == 192) {
-            genNote2(upNote);
+            genNote2(upNote, upParent);
             if (music3[spawnCounter] == 128) {
                 int holdLength = (int)((music4[spawnCounter] - music1[spawnCounter]) / 1000.0 * unitsPerSec);
                 for (int i = 0; i < holdLength; i++) {
-                    genNote2(holdUpNote, 11.0f + i);
+                    genNote2(holdUpNote, upParent, 11.0f + i);
                 }
             }
         } else if (music2[spawnCounter] == 320) {
-            genNote2(downNote);
+            genNote2(downNote, downParent);
             if (music3[spawnCounter] == 128) {  
                 int holdLength = (int)((music4[spawnCounter] - music1[spawnCounter]) / 1000.0 * unitsPerSec);
                 for (int i = 0; i < holdLength; i++) {
-                    genNote2(holdDownNote, 11.0f + i);
+                    genNote2(holdDownNote, downParent, 11.0f + i);
                 }
             }
         } else if (music2[spawnCounter] == 448) {
-            genNote2(rightNote);
+            genNote2(rightNote, rightParent);
             if (music3[spawnCounter] == 128) {
                 int holdLength = (int)((music4[spawnCounter] - music1[spawnCounter]) / 1000.0 * unitsPerSec);
                 for (int i = 0; i < holdLength; i++) {
-                    genNote2(holdRightNote, 11.0f + i);
+                    genNote2(holdRightNote, rightParent, 11.0f + i);
                 }
             }
         }
     }
 
-    void genNote2(GameObject noteType, float xPos = 10.0f) {
-        GameObject note = Instantiate(noteType, new Vector3(noteType.transform.position.x, xPos, noteType.transform.position.z), noteType.transform.rotation);
-        note.transform.SetParent(parentGameObject.transform, false);
+    void genNote2(GameObject noteType, GameObject parentNoteGameObject, float yPos = 10.0f) {
+        GameObject note = Instantiate(noteType, new Vector3(0, yPos, noteType.transform.position.z), noteType.transform.rotation);
+        note.transform.SetParent(parentNoteGameObject.transform, false);
     }
 
     public void NoteHit() {
@@ -216,27 +236,27 @@ public class GameManager : MonoBehaviour {
         scoreText.text = "SCORE: " + currentScore;
     }
 
-    public void goodHit(float xPos) {
-        var hitObject = Instantiate(hitEffect, new Vector3(xPos, 0.0f, 6.0f), hitEffect.transform.rotation);
-        hitObject.transform.SetParent(parentGameObject.transform, false);
+    public void goodHit(GameObject parentNoteGameObject) {
+        var hitObject = Instantiate(hitEffect, new Vector3(0.0f, 0.0f, 6.0f), hitEffect.transform.rotation);
+        hitObject.transform.SetParent(parentNoteGameObject.transform, false);
         Destroy(hitObject, 0.3f);
         currentScore += scorePerGood;
         NoteHit();
 
         normalHits++;
     }
-    public void greatHit(float xPos) {
-        var hitObject = Instantiate(goodEffect, new Vector3(xPos, 0.0f, 6.0f), goodEffect.transform.rotation);
-        hitObject.transform.SetParent(parentGameObject.transform, false);
+    public void greatHit(GameObject parentNoteGameObject) {
+        var hitObject = Instantiate(goodEffect, new Vector3(0.0f, 0.0f, 6.0f), goodEffect.transform.rotation);
+        hitObject.transform.SetParent(parentNoteGameObject.transform, false);
         Destroy(hitObject, 0.3f);
         currentScore += scorePerGreat;
         NoteHit();
 
         goodHits++;
     }
-    public void perfectHit(float xPos) {
-        var hitObject = Instantiate(perfectEffect, new Vector3(xPos, 0.0f, 6.0f), perfectEffect.transform.rotation);
-        hitObject.transform.SetParent(parentGameObject.transform, false);
+    public void perfectHit(GameObject parentNoteGameObject) {
+        var hitObject = Instantiate(perfectEffect, new Vector3(0.0f, 0.0f, 6.0f), perfectEffect.transform.rotation);
+        hitObject.transform.SetParent(parentNoteGameObject.transform, false);
         Destroy(hitObject, 0.3f);
         currentScore += scorePerPerfect;
         NoteHit();
@@ -244,17 +264,17 @@ public class GameManager : MonoBehaviour {
         perfectHits++;
     }
 
-    public void NoteMiss(float xPos) {
-        var hitObject = Instantiate(missEffect, new Vector3(xPos, 0.0f, 6.0f), missEffect.transform.rotation);
-        hitObject.transform.SetParent(parentGameObject.transform, false);
+    public void NoteMiss(GameObject parentNoteGameObject) {
+        var hitObject = Instantiate(missEffect, new Vector3(0.0f, 0.0f, 6.0f), missEffect.transform.rotation);
+        hitObject.transform.SetParent(parentNoteGameObject.transform, false);
         Destroy(hitObject, 0.3f);
         comboTracker = 0;
         comboText.text = "COMBO: x" + comboTracker;
         missHits++;
     }
-    public void HoldHit(float xPos) {
-        var hitObject = Instantiate(perfectEffect, new Vector3(xPos, 0.0f, 6.0f), missEffect.transform.rotation);
-        hitObject.transform.SetParent(parentGameObject.transform, false);
+    public void HoldHit(GameObject parentNoteGameObject) {
+        var hitObject = Instantiate(perfectEffect, new Vector3(0.0f, 0.0f, 6.0f), missEffect.transform.rotation);
+        hitObject.transform.SetParent(parentNoteGameObject.transform, false);
         Destroy(hitObject, 0.3f);
         currentScore += scorePerPerfect;
         NoteHit();

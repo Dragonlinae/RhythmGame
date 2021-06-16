@@ -21,11 +21,11 @@ public class NoteHold : MonoBehaviour {
             if (Input.GetKey(keyToPress)) {
                 gameObject.SetActive(false);
                 Destroy(gameObject);
-                GameManager.instance.HoldHit(transform.localPosition.x);
+                GameManager.instance.HoldHit(transform.parent.gameObject);
             } else {
                 gameObject.SetActive(false);
                 Destroy(gameObject);
-                GameManager.instance.NoteMiss(transform.localPosition.x);
+                GameManager.instance.NoteMiss(transform.parent.gameObject);
             }
         }
     }

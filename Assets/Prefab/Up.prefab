@@ -102,6 +102,7 @@ MonoBehaviour:
   started: 0
   noteType: 85
   isNext: 0
+  activatorTag: UpActivator
 --- !u!61 &6677853857653246966
 BoxCollider2D:
   m_ObjectHideFlags: 0
