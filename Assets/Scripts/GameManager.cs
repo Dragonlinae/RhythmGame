@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviour {
         //parentGameObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, (float)Math.Sin(rotationAmount) * 50);
         //parentGameObject.transform.localPosition = new Vector3((float)Math.Sin(rotationAmount * 2) * 7, (float)Math.Sin(rotationAmount * 3) * 5, 0.0f);
 
-        rotationAmount += Time.deltaTime * 1;
+        //rotationAmount += Time.deltaTime * 1;
 
         //leftParent.transform.rotation = Quaternion.Euler(0.0f, 0.0f, (float)Math.Sin(rotationAmount) * 200);
         //rightParent.transform.rotation = Quaternion.Euler(0.0f, 0.0f, (float)Math.Sin(rotationAmount) * -100);

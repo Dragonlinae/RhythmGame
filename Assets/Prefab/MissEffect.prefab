@@ -4872,6 +4872,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1491178164204407727}
   - component: {fileID: 7344136038827750766}
+  - component: {fileID: 921696864228318450}
   m_Layer: 0
   m_Name: MissEffect
   m_TagString: Untagged
@@ -4945,3 +4946,15 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &921696864228318450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4414590068890147729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d815323d8a3d44e429dcaf09aa26e3ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
