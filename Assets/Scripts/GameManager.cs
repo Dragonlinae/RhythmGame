@@ -35,6 +35,14 @@ public class GameManager : MonoBehaviour {
     public GameObject downParent;
     public GameObject rightParent;
 
+    public KeyCode leftKey;
+    public KeyCode rightKey;
+    public KeyCode upKey;
+    public KeyCode downKey;
+    public Animator animator;
+
+    public Slider slider;
+
     public int totalNotes;
     public int normalHits;
     public int goodHits;
@@ -63,6 +71,8 @@ public class GameManager : MonoBehaviour {
     public float timePerAttack;
     public float nextAttackTime;
     public float rotationAmount;
+    public float healthLeft = 1;
+    public bool lose = false;
 
     public int spawnCounter;
 
@@ -137,7 +147,7 @@ public class GameManager : MonoBehaviour {
                 }
             } else {
                 if (spawnCounter < music1.Length && music1[spawnCounter] < music.time * 1000 + sendEarlyTime) {
-                    while (music1[spawnCounter] < music.time * 1000 + sendEarlyTime) {
+                    while (spawnCounter < music1.Length && music1[spawnCounter] < music.time * 1000 + sendEarlyTime) {
                         genNote();
                         spawnCounter++;
                     }
@@ -147,7 +157,7 @@ public class GameManager : MonoBehaviour {
                     nextAttackTime += timePerAttack;
                 }
             }
-            if (music.time >= music.clip.length && !resultsScreen.activeInHierarchy) {
+            if (music.time >= music.clip.length && !resultsScreen.activeInHierarchy || lose) {
                 resultsScreen.SetActive(true);
                 normalsText.text = normalHits.ToString();
                 goodsText.text = goodHits.ToString();
@@ -234,6 +244,16 @@ public class GameManager : MonoBehaviour {
         comboTracker++;
         comboText.text = "COMBO: x" + comboTracker;
         scoreText.text = "SCORE: " + currentScore;
+
+        if (Input.GetKey(leftKey)) {
+            animator.SetTrigger("Left");
+        } else if (Input.GetKey(upKey)) {
+            animator.SetTrigger("Up");
+        } else if (Input.GetKey(downKey)) {
+            animator.SetTrigger("Down");
+        } else if (Input.GetKey(rightKey)) {
+            animator.SetTrigger("Right");
+        }
     }
 
     public void goodHit(GameObject parentNoteGameObject) {
@@ -271,6 +291,14 @@ public class GameManager : MonoBehaviour {
         comboTracker = 0;
         comboText.text = "COMBO: x" + comboTracker;
         missHits++;
+        animator.SetTrigger("Hurt");
+        healthLeft -= 0.05f;
+        slider.value = healthLeft;
+        if (healthLeft <= 0) {
+            music.Stop();
+            spawnCounter = music1.Length;
+            lose = true;
+        }
     }
     public void HoldHit(GameObject parentNoteGameObject) {
         var hitObject = Instantiate(perfectEffect, new Vector3(0.0f, 0.0f, 6.0f), missEffect.transform.rotation);
